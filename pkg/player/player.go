@@ -1,6 +1,7 @@
 package player
 
 import (
+	"bufio"
 	"io"
 	"time"
 
@@ -17,7 +18,7 @@ func Run(opts Opts, ctx utils.GracefulContext) {
 	effectiveOpts := opts.applyDefaults()
 
 	sublog := log.With().Str("player", effectiveOpts.BabyUID).Logger()
-	cmd := effectiveOpts.Executor("ffmpeg", "-i", effectiveOpts.URL, "-f", "flv", "-")
+	cmd := effectiveOpts.Executor("ffmpeg", "-i", effectiveOpts.URL, "-af", "silencedetect=noise=0.1", "-f", "flv", "-")
 
 	stderrPipe, err := cmd.StderrPipe()
 	if err != nil {
@@ -50,7 +51,27 @@ func Run(opts Opts, ctx utils.GracefulContext) {
 	stderrC := make(chan utils.LogTailer, 1)
 	go func() {
 		tailer := utils.NewLogTailer(3)
-		tailer.Tail(stderrPipe)
+
+		scanner := bufio.NewScanner(stderrPipe)
+		for scanner.Scan() {
+			silenceDetect := parseSilenceDetectLog(scanner.Text())
+			if silenceDetect == ffmpegSilenceDetectEvent_start {
+				effectiveOpts.BabyStateManager.Update(
+					effectiveOpts.BabyUID,
+					*baby.NewState().
+						SetIsSilence(true),
+				)
+			} else if silenceDetect == ffmpegSilenceDetectEvent_end {
+				effectiveOpts.BabyStateManager.Update(
+					effectiveOpts.BabyUID,
+					*baby.NewState().
+						SetIsSilence(false),
+				)
+			}
+
+			tailer.Append(scanner.Text())
+		}
+
 		stderrC <- *tailer
 	}()
 

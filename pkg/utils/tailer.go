@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"bufio"
-	"io"
 	"strings"
 )
 
@@ -44,13 +42,5 @@ func (tailer *LogTailer) Append(line string) {
 	tailer.nextIdx = (tailer.nextIdx + 1) % tailer.maxNumLines
 	if tailer.numLines < tailer.maxNumLines {
 		tailer.numLines++
-	}
-}
-
-// Tail - tails line of given reader
-func (tailer *LogTailer) Tail(r io.Reader) {
-	scanner := bufio.NewScanner(r)
-	for scanner.Scan() {
-		tailer.Append(scanner.Text())
 	}
 }

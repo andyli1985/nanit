@@ -19,6 +19,8 @@ func TestPlayer(t *testing.T) {
 	utils.RunWithGracefulCancel(func(ctx utils.GracefulContext) {
 		mockedExecutor := newCommandMock(func(mock *commandMock) error {
 			go func() {
+				mock.WriteStderrLine("[silencedetect @ 0x7fede4107840] silence_start: -0.000226757")
+				mock.WriteStderrLine("[silencedetect @ 0x7fede4107840] silence_end: 2816.08 | silence_duration: 144.597")
 				time.Sleep(2 * time.Second)
 				mock.Finish(0)
 			}()
