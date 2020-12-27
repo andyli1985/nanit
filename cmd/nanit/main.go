@@ -50,6 +50,8 @@ func main() {
 		opts.LocalStreaming = &app.LocalStreamingOpts{
 			PushTargetURLTemplate: utils.EnvVarReqStr("NANIT_LOCAL_STREAM_PUSH_TARGET"),
 		}
+
+		opts.SilenceDetectArgs = utils.EnvVarStr("NANIT_SILENCE_DETECT_ARGS", "noise=0.001")
 	}
 
 	interrupt := make(chan os.Signal, 1)

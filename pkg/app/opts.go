@@ -6,13 +6,14 @@ import (
 
 // Opts - application run options
 type Opts struct {
-	NanitCredentials NanitCredentials
-	SessionFile      string
-	DataDirectories  DataDirectories
-	HTTPEnabled      bool
-	MQTT             *mqtt.Opts
-	StreamProcessor  *StreamProcessorOpts
-	LocalStreaming   *LocalStreamingOpts
+	NanitCredentials  NanitCredentials
+	SessionFile       string
+	DataDirectories   DataDirectories
+	HTTPEnabled       bool
+	MQTT              *mqtt.Opts
+	StreamProcessor   *StreamProcessorOpts
+	LocalStreaming    *LocalStreamingOpts
+	SilenceDetectArgs string
 }
 
 // NanitCredentials - user credentials for Nanit account

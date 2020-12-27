@@ -9,17 +9,20 @@ import (
 
 // Opts - player options
 type Opts struct {
-	BabyUID          string
-	URL              string
-	BabyStateManager *baby.StateManager
-	Executor         func(string, ...string) Command
+	BabyUID string
+	URL     string
+	// SilenceDetectArgs - https://ffmpeg.org/ffmpeg-filters.html#silencedetect
+	SilenceDetectArgs string
+	BabyStateManager  *baby.StateManager
+	Executor          func(string, ...string) Command
 }
 
 func (opts Opts) applyDefaults() Opts {
 	result := Opts{
-		BabyUID:          opts.BabyUID,
-		URL:              opts.URL,
-		BabyStateManager: opts.BabyStateManager,
+		BabyUID:           opts.BabyUID,
+		URL:               opts.URL,
+		BabyStateManager:  opts.BabyStateManager,
+		SilenceDetectArgs: opts.SilenceDetectArgs,
 	}
 
 	if opts.Executor == nil {

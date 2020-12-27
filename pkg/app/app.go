@@ -263,9 +263,10 @@ func (app *App) runWatchDog(babyUID string, ctx utils.GracefulContext) {
 			log.Debug().Str("baby_uid", babyUID).Msg("Starting local stream watch dog")
 
 			player.Run(player.Opts{
-				BabyUID:          babyUID,
-				URL:              app.getLocalStreamURL(babyUID),
-				BabyStateManager: app.BabyStateManager,
+				BabyUID:           babyUID,
+				URL:               app.getLocalStreamURL(babyUID),
+				BabyStateManager:  app.BabyStateManager,
+				SilenceDetectArgs: app.Opts.SilenceDetectArgs,
 			}, ctx)
 
 			app.BabyStateManager.Update(babyUID, *baby.NewState().SetStreamState(baby.StreamState_Unhealthy))

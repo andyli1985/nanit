@@ -2,6 +2,7 @@ package player
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"time"
 
@@ -18,7 +19,7 @@ func Run(opts Opts, ctx utils.GracefulContext) {
 	effectiveOpts := opts.applyDefaults()
 
 	sublog := log.With().Str("player", effectiveOpts.BabyUID).Logger()
-	cmd := effectiveOpts.Executor("ffmpeg", "-i", effectiveOpts.URL, "-af", "silencedetect=noise=0.1", "-f", "flv", "-")
+	cmd := effectiveOpts.Executor("ffmpeg", "-i", effectiveOpts.URL, "-af", fmt.Sprintf("silencedetect=%v", effectiveOpts.SilenceDetectArgs), "-f", "flv", "-")
 
 	stderrPipe, err := cmd.StderrPipe()
 	if err != nil {
@@ -36,7 +37,7 @@ func Run(opts Opts, ctx utils.GracefulContext) {
 	if err != nil {
 		sublog.Fatal().Err(err).Msg("Unable to start")
 	} else {
-		sublog.Info().Str("url", effectiveOpts.URL).Msg("Player started")
+		sublog.Info().Str("url", effectiveOpts.URL).Str("silencedetect", effectiveOpts.SilenceDetectArgs).Msg("Player started")
 	}
 
 	exitedC := make(chan struct{}, 1)
@@ -119,6 +120,12 @@ func Run(opts Opts, ctx utils.GracefulContext) {
 					}
 				}
 			}
+
+			// switch flvTag.TagType {
+			// case flvtag.TagTypeAudio:
+			// 	audioData, ok := flvTag.Data.(*flvtag.AudioData)
+			// 	audioData
+			// }
 
 			flvTag.Close() // Discard unread buffers
 		}
