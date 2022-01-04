@@ -13,10 +13,14 @@ sensor:
   platform: mqtt
   state_topic: "nanit/babies/{your_baby_uid}/temperature"
   device_class: temperature
+  unit_of_measurement: "°C"
+  value_template: "{{ value | round(1) }}"
 - name: "Nanit Humidity"
   platform: mqtt
   state_topic: "nanit/babies/{your_baby_uid}/humidity"
   device_class: humidity
+  unit_of_measurement: "%"
+  value_template: "{{ value | round(0) }}"
 ```
 
 ## See also
